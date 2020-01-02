@@ -15,45 +15,21 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef HBSDECRYPTORV2_H
+#define HBSDECRYPTORV2_H
 
-#include <QMainWindow>
-#include <QDir>
+#include "utils/hbsdecryptor.h"
+#include "utils/crypto.h"
 
-namespace Ui {
-class MainWindow;
-}
-
-class QTreeWidgetItem;
-
-class MainWindow : public QMainWindow
+class HBSDecryptorV2 : public HBSDecryptor
 {
-    Q_OBJECT
-
 public:
-    virtual ~MainWindow();
-    explicit MainWindow(QWidget *parent=nullptr);
-
-private slots:
-    void sel_src();
-    void sel_dst();
-    void recover();
-    void show_about_hbsrecover();
-    void show_report_an_issue();
-    void show_github_repo();
-    void show_license();
-    /* UI update slots */
-    void refresh_state(const QString &);
-    void refresh_file_list(bool);
-    void refresh_file_list_colors();
-    void refresh_pswd_line_edit(bool);
+    virtual ~HBSDecryptorV2(){};
+    HBSDecryptorV2(const QString &pswd);
+    bool recover(const QString &inpath, const QString &outpath);
 
 private:
-    QDir m_srcdir;
-    QDir m_dstdir;
-    QStringList m_recovered;
-    Ui::MainWindow *ui;
+    Crypto::Buffer m_wk;
 };
 
-#endif // MAINWINDOW_H
+#endif // HBSDECRYPTORV2_H

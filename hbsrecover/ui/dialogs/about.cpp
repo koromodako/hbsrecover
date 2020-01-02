@@ -15,25 +15,28 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#ifndef ABOUTPICSOU_H
-#define ABOUTPICSOU_H
+#include "about.h"
+#include "ui_about.h"
+#include "utils/crypto.h"
 
-#include <QDialog>
+#include "hbsrecover.h"
 
-namespace Ui {
-class AboutPicsou;
+About::~About()
+{
+    delete ui;
 }
 
-class AboutPicsou : public QDialog
+About::About(QWidget *parent) :
+    QDialog(parent),
+    ui(new Ui::About)
 {
-    Q_OBJECT
+    ui->setupUi(this);
 
-public:
-    virtual ~AboutPicsou();
-    explicit AboutPicsou(QWidget *parent);
+    ui->version->setText(HBSRECOVER_VERSION);
+    ui->build->setText(HBSRECOVER_COMMIT);
+    ui->libcrypto->setText(Crypto::lib_description());
 
-private:
-    Ui::AboutPicsou *ui;
-};
-
-#endif // ABOUTPICSOU_H
+    /* initialize connections */
+    connect(ui->buttons, &QDialogButtonBox::accepted, this, &About::close);
+    connect(ui->buttons, &QDialogButtonBox::rejected, this, &About::close);
+}

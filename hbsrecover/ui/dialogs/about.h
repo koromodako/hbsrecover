@@ -15,28 +15,25 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-#include "aboutpicsou.h"
-#include "ui_aboutpicsou.h"
-#include "utils/cryptoctx.h"
+#ifndef ABOUT_H
+#define ABOUT_H
 
-#include "picsou.h"
+#include <QDialog>
 
-AboutPicsou::~AboutPicsou()
-{
-    delete ui;
+namespace Ui {
+class About;
 }
 
-AboutPicsou::AboutPicsou(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::AboutPicsou)
+class About: public QDialog
 {
-    ui->setupUi(this);
+    Q_OBJECT
 
-    ui->version->setText(PICSOU_VERSION);
-    ui->build->setText(PICSOU_COMMIT);
-    ui->libcrypto->setText(CryptoCtx::lib_description());
+public:
+    virtual ~About();
+    explicit About(QWidget *parent);
 
-    /* initialize connections */
-    connect(ui->buttons, &QDialogButtonBox::accepted, this, &AboutPicsou::close);
-    connect(ui->buttons, &QDialogButtonBox::rejected, this, &AboutPicsou::close);
-}
+private:
+    Ui::About *ui;
+};
+
+#endif // ABOUT_H

@@ -2121,5 +2121,6 @@
         <file>resources/material-design/svg/youtube-tv.svg</file>
         <file>resources/material-design/svg/zip-box.svg</file>
         <file>translation/hbsrecover_fr_FR.qm</file>
+        <file>resources/hbsrecovery.png</file>
     </qresource>
 </RCC>

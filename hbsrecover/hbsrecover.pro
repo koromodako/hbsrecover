@@ -6,7 +6,7 @@
 TARGET = hbsrecover
 TEMPLATE = app
 CONFIG += c++14 lrelease
-QT += core svg widgets concurrent
+QT += core svg widgets
 #
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked as deprecated (the exact warnings
@@ -32,7 +32,7 @@ win32 {
     RC_ICONS = hbsrecover.ico
     QMAKE_LFLAGS += -fstack-protector
     QMAKE_CXXFLAGS += -fstack-protector
-} else {
+}else{
     #
     # LINUX TARGETS
     #
@@ -49,30 +49,48 @@ INCLUDEPATH += $$PWD/third-party/build/include/botan-2
 #
 # Build-type dependent configuration
 #
-CONFIG(debug, debug|release) {
+CONFIG(debug, debug|release){
     DESTDIR = $$PWD/../dist/debug
     win32:QMAKE_POST_LINK += "windeployqt.exe $$PWD/../dist/debug/hbsrecover.exe"
-} else {
+}else{
     DESTDIR = $$PWD/../dist/release
     win32:QMAKE_POST_LINK += "windeployqt.exe $$PWD/../dist/release/hbsrecover.exe"
 }
 message("link arguments:        $$LIBS")
 message("include arguments:     $$INCLUDEPATH")
 message("destination directory: $$DESTDIR")
-message("post link action: $$QMAKE_POST_LINK")
+message("post link action:      $$QMAKE_POST_LINK")
 #
 # Files
 #
 SOURCES += \
     main.cpp \
-    ui/mainwindow.cpp
+    ui/dialogs/about.cpp \
+    ui/mainwindow.cpp \
+    utils/crypto.cpp \
+    utils/hbsdecryptoropenssl.cpp \
+    utils/hbsdecryptorv1.cpp \
+    utils/hbsdecryptorv2.cpp \
+    utils/hbsfileidentifier.cpp \
+    utils/messagehandler.cpp
 
 HEADERS += \
     hbsrecover.h \
+    hbsrecover.h \
     hbsrecover.h.dist \
-    ui/mainwindow.h
+    ui/dialogs/about.h \
+    ui/mainwindow.h \
+    utils/crypto.h \
+    utils/hbsdecryptor.h \
+    utils/hbsdecryptoropenssl.h \
+    utils/hbsdecryptorv1.h \
+    utils/hbsdecryptorv2.h \
+    utils/hbsfileidentifier.h \
+    utils/macro.h \
+    utils/messagehandler.h
 
 FORMS += \
+    ui/dialogs/about.ui \
     ui/mainwindow.ui
 
 RESOURCES += \

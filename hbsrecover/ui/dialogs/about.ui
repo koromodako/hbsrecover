@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>AboutPicsou</class>
- <widget class="QWidget" name="AboutPicsou">
+ <class>About</class>
+ <widget class="QWidget" name="About">
   <property name="windowModality">
    <enum>Qt::ApplicationModal</enum>
   </property>
@@ -26,7 +26,7 @@
    <item>
     <widget class="QLabel" name="description">
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Picsou&lt;/span&gt;&lt;/p&gt;&lt;p&gt;Keep in touch with your expenses.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;HBSRecover&lt;/span&gt;&lt;/p&gt;&lt;p&gt;QNAP Hybrid Backup Sync Recovery Tool&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
     </widget>
    </item>
