@@ -1,0 +1,93 @@
+#!/usr/bin/env python3
+# -!- encoding:utf8 -!-
+#
+# HBSRecover | QNAP Hybrid Backup Sync Recovery Tool
+# Copyright (C) 2020  koromodako
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <https://www.gnu.org/licenses/>.
+#
+import os
+from argparse import ArgumentParser
+from subprocess import getoutput
+
+DRY_RUN = False
+WINDOWS = (os.name == 'nt')
+TRANSLATION_PREFIX = 'hbsrecover_'
+TRANSLATION_LOCALES = [
+    'fr_FR'
+]
+VERSION_HEADER = 'hbsrecover.h'
+VERSION_HEADER_TMPL = f'{VERSION_HEADER}.dist'
+
+def git(args):
+    '''Executes a git command depending on current OS
+    '''
+    args.insert(0, 'git.exe' if WINDOWS else 'git')
+    cmd = ' '.join(args)
+    return getoutput(cmd)
+
+def lrelease(args):
+    '''Executes a lrelease command depending on current OS
+    '''
+    args.insert(0, 'lrelease.exe' if WINDOWS else 'lrelease')
+    cmd = ' '.join(args)
+    if DRY_RUN:
+        print(cmd)
+    else:
+        getoutput(cmd)
+
+def sanitize(s):
+    '''Processes command output to keep the first line only and stripped
+    '''
+    return s.split('\n')[0].strip()
+
+def create_version_header():
+    '''Creates ou updates picsou.h
+    '''
+    status=sanitize(getoutput('git status --porcelain'))
+    status='clean' if len(status) == 0 else 'dirty'
+
+    commit=sanitize(getoutput('git rev-parse HEAD'))
+
+    version=sanitize(getoutput('git describe --tags'))
+    if len(version) == 0:
+        version='dev'
+
+    with open(VERSION_HEADER_TMPL) as f:
+        data=f.read()
+
+    data=data.replace('%{STATUS}%', status)
+    data=data.replace('%{COMMIT}%', commit)
+    data=data.replace('%{VERSION}%', version)
+
+    if DRY_RUN:
+        print(data)
+    else:
+        with open(VERSION_HEADER, 'w') as f:
+            f.write(data)
+
+def release_translations():
+    '''Releases picsou translations
+    '''
+    for locale in TRANSLATION_LOCALES:
+        basepath = f'translation/{TRANSLATION_PREFIX}{locale}'
+        lrelease([f'{basepath}.ts', '-qm', f'{basepath}.qm'])
+
+if __name__ == '__main__':
+    apr = ArgumentParser(description="Pre-build script for hbsrecover")
+    apr.add_argument('--dry-run', action='store_true', help="Prints to stdout instead of writing hbsrecover header.")
+    args = apr.parse_args()
+    DRY_RUN = args.dry_run
+    create_version_header()
+    release_translations()

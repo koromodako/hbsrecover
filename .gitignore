@@ -1,3 +1,14 @@
+*.user
+*.qm
+picsou.h
+*.o
+*.autosave
+dist*/
+build*/
+picsou/third-party
+third-party/build/
+third-party/botan-*/
+
 # Prerequisites
 *.d
 
