@@ -20,6 +20,7 @@
 
 #include <QMainWindow>
 #include <QDir>
+#include <QSet>
 
 namespace Ui {
 class MainWindow;
@@ -52,7 +53,7 @@ private slots:
 private:
     QDir m_srcdir;
     QDir m_dstdir;
-    QStringList m_recovered;
+    QSet<QString> m_recovered;
     Ui::MainWindow *ui;
 };
 

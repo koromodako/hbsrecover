@@ -8,6 +8,7 @@ class HBSDecryptor
 {
 public:
     virtual bool recover(const QString &inpath, const QString &outpath)=0;
+    virtual void setCompression(bool compressed)=0;
 };
 
 typedef QSharedPointer<HBSDecryptor> HBSDecryptorPtr;

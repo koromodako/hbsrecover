@@ -52,56 +52,61 @@ bool HBSDecryptorV2::recover(const QString &inpath, const QString &outpath)
 {
     LOG_IN("inpath="<<inpath<<", oupath="<<outpath);
     bool status=true;
-    QFileInfo f(inpath);
-    if(f.size()>SIGN_SZ+HEADER_SZ){
-        Botan::DataSource_Stream pipe_in(inpath.toStdString(), true);
-        /* process HBS v2 file header */
-        Crypto::Buffer buf(HEADER_SZ);
-        /* skip signature /!\ ensure that SIGN_SZ is smaller than HEADER_SZ /!\ */
-        pipe_in.read(buf.data(), SIGN_SZ);
-        /* take header */
-        pipe_in.read(buf.data(), HEADER_SZ);
-        /* decrypt header */
-        Crypto::BlockCipherPtr cipher=Botan::BlockCipher::create(HEADER_ENCRYPTION_SPEC);
-        ulong offset=0;
-        if(cipher){
-            cipher->set_key(m_wk);
-            while(offset<buf.size()){
-                cipher->decrypt(buf.data()+offset);
-                offset+=cipher->block_size();
-            }
-            Crypto::Buffer mk=Crypto::Buffer(buf.begin()+MAGIC_SZ, buf.begin()+MAGIC_SZ+MK_SZ);
-            Crypto::Buffer iv=Crypto::Buffer(buf.begin()+MAGIC_SZ+MK_SZ, buf.begin()+MAGIC_SZ+MK_SZ+IV_SZ);
-            qint64 size=0;
-            for(int b=0; b<8; b++){
-                size|=buf.at(MAGIC_SZ+MK_SZ+IV_SZ+b);
-                if(b<7){
-                    size<<=8;
+    if(m_compressed){
+        LOG_WARNING("compression is not supported yet. Use hbsrecover.py instead.");
+        status=false;
+    }else{
+        QFileInfo f(inpath);
+        if(f.size()>SIGN_SZ+HEADER_SZ){
+            Botan::DataSource_Stream pipe_in(inpath.toStdString(), true);
+            /* process HBS v2 file header */
+            Crypto::Buffer buf(HEADER_SZ);
+            /* skip signature /!\ ensure that SIGN_SZ is smaller than HEADER_SZ /!\ */
+            pipe_in.read(buf.data(), SIGN_SZ);
+            /* take header */
+            pipe_in.read(buf.data(), HEADER_SZ);
+            /* decrypt header */
+            Crypto::BlockCipherPtr cipher=Botan::BlockCipher::create(HEADER_ENCRYPTION_SPEC);
+            ulong offset=0;
+            if(cipher){
+                cipher->set_key(m_wk);
+                while(offset<buf.size()){
+                    cipher->decrypt(buf.data()+offset);
+                    offset+=cipher->block_size();
                 }
-            }
-            if(size>=0&&f.size()>size){
-                /* decrypt HBS v2 content */
-                Botan::Keyed_Filter *aes=Botan::get_cipher(CONTENT_ENCRYPTION_SPEC, mk, iv, Botan::DECRYPTION);
-                Botan::DataSink_Stream *pipe_out=new Botan::DataSink_Stream(outpath.toStdString(), true);
-                if(aes){
-                    Botan::Pipe pipe(aes, pipe_out);
-                    pipe.process_msg(pipe_in);
-                    LOG_INFO("file recovered.");
+                Crypto::Buffer mk=Crypto::Buffer(buf.begin()+MAGIC_SZ, buf.begin()+MAGIC_SZ+MK_SZ);
+                Crypto::Buffer iv=Crypto::Buffer(buf.begin()+MAGIC_SZ+MK_SZ, buf.begin()+MAGIC_SZ+MK_SZ+IV_SZ);
+                qint64 size=0;
+                for(int b=0; b<8; b++){
+                    size|=buf.at(MAGIC_SZ+MK_SZ+IV_SZ+b);
+                    if(b<7){
+                        size<<=8;
+                    }
+                }
+                if(size>=0&&f.size()>size){
+                    /* decrypt HBS v2 content */
+                    Botan::Keyed_Filter *aes=Botan::get_cipher(CONTENT_ENCRYPTION_SPEC, mk, iv, Botan::DECRYPTION);
+                    Botan::DataSink_Stream *pipe_out=new Botan::DataSink_Stream(outpath.toStdString(), true);
+                    if(aes){
+                        Botan::Pipe pipe(aes, pipe_out);
+                        pipe.process_msg(pipe_in);
+                        LOG_INFO("file recovered.");
+                    }else{
+                        LOG_CRITICAL("AES keyed filter creation failed.")
+                        status=false;
+                    }
                 }else{
-                    LOG_CRITICAL("AES keyed filter creation failed.")
+                    LOG_WARNING("header descryption failed (bad password) or file is corrupted.")
                     status=false;
                 }
             }else{
-                LOG_WARNING("header descryption failed (bad password) or file is corrupted.")
+                LOG_CRITICAL("cipher creation failed.")
                 status=false;
             }
         }else{
-            LOG_CRITICAL("cipher creation failed.")
+            LOG_WARNING("file too small to be a valid HBS encrypted file.")
             status=false;
         }
-    }else{
-        LOG_WARNING("file too small to be a valid HBS encrypted file.")
-        status=false;
     }
     LOG_BOOL_RETURN(status)
 }

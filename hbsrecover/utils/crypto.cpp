@@ -25,10 +25,10 @@ Crypto::Buffer Crypto::ba2cb(const QByteArray &ba)
     return Crypto::Buffer(ba.begin(), ba.end());
 }
 
-HBSDecryptorPtr Crypto::decryptor(HBSFileIdentifier::HBSFileVersion version, const QString &pswd)
+HBSDecryptorPtr Crypto::decryptor(HBSFileIdentifier::HBSFileInfo info, const QString &pswd)
 {
     HBSDecryptorPtr dec;
-    switch (version){
+    switch (info.version){
     case HBSFileIdentifier::HBSFileVersion::Unknown:
         break;
     case HBSFileIdentifier::HBSFileVersion::Version1:
@@ -36,6 +36,7 @@ HBSDecryptorPtr Crypto::decryptor(HBSFileIdentifier::HBSFileVersion version, con
         break;
     case HBSFileIdentifier::HBSFileVersion::Version2:
         dec=HBSDecryptorPtr(new HBSDecryptorV2(pswd));
+        dec->setCompression(info.compression==HBSFileIdentifier::HBSFileCompression::Compressed);
         break;
     case HBSFileIdentifier::HBSFileVersion::OpenSSL:
         dec=HBSDecryptorPtr(new HBSDecryptorOpenSSL(pswd));

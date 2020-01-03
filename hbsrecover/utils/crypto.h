@@ -19,7 +19,7 @@ QByteArray cb2ba(const Buffer &cb);
 
 Buffer ba2cb(const QByteArray &ba);
 
-HBSDecryptorPtr decryptor(HBSFileIdentifier::HBSFileVersion version, const QString &pswd);
+HBSDecryptorPtr decryptor(HBSFileIdentifier::HBSFileInfo info, const QString &pswd);
 
 }
 

@@ -114,7 +114,7 @@ void MainWindow::recover()
     QString inpath, outpath;
     HBSDecryptorPtr decptr;
     HBSFileIdentifier hbs_ident;
-    HBSFileIdentifier::HBSFileVersion version;
+    HBSFileIdentifier::HBSFileInfo info;
     QProgressDialog progress_dialog(tr("Recovery in progress..."), tr("Cancel"), 0, total, this);
     progress_dialog.setWindowModality(Qt::WindowModal);
     m_recovered.clear();
@@ -124,18 +124,19 @@ void MainWindow::recover()
         outpath=m_dstdir.path()+QDir::separator()+m_srcdir.relativeFilePath(inpath);
         /* ensure directory exists */
         outdir.mkpath(outpath.left(outpath.lastIndexOf(QDir::separator())));
-        version=hbs_ident.identify(inpath);
+        info=hbs_ident.info(inpath);
         LOG_INFO("recovering data from "<<inpath<<" ...")
-        LOG_INFO("file version is "<<version);
+        LOG_INFO("file version is "<<info.version);
+        LOG_INFO("file compression is "<<info.compression);
         LOG_INFO("writing recovered data to "<<outpath<<" ...")
-        if(version==HBSFileIdentifier::HBSFileVersion::Unknown){
+        if(info.version==HBSFileIdentifier::HBSFileVersion::Unknown){
             LOG_WARNING("unkown version. Skipped: "<<inpath)
             continue;
         }
-        decptr=Crypto::decryptor(version, ui->pswd->text());
+        decptr=Crypto::decryptor(info, ui->pswd->text());
         if(decptr->recover(inpath, outpath)){
             LOG_DEBUG("successful recovery!")
-            m_recovered.append(inpath);
+            m_recovered.insert(inpath);
             continue;
         }
         LOG_WARNING("recovery failed. File might be corrupted.")

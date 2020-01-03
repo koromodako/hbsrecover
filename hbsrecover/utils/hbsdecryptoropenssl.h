@@ -10,6 +10,10 @@ public:
     HBSDecryptorOpenSSL(const QString &){};
 
     bool recover(const QString &inpath, const QString &outpath);
+    void setCompression(bool compressed) {m_compressed=compressed;};
+
+private:
+    bool m_compressed;
 };
 
 #endif // HBSDECRYPTOROPENSSL_H

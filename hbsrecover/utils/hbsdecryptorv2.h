@@ -27,8 +27,10 @@ public:
     virtual ~HBSDecryptorV2(){};
     HBSDecryptorV2(const QString &pswd);
     bool recover(const QString &inpath, const QString &outpath);
+    void setCompression(bool compressed) {m_compressed=compressed;};
 
 private:
+    bool m_compressed;
     Crypto::Buffer m_wk;
 };
 

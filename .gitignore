@@ -1,6 +1,6 @@
 *.user
 *.qm
-picsou.h
+hbsrecover.h
 *.o
 *.autosave
 dist*/

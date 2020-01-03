@@ -13,10 +13,20 @@ public:
         OpenSSL = 3,
     };
 
+    enum HBSFileCompression {
+        None = 0,
+        Compressed = 1
+    };
+
+    struct HBSFileInfo {
+        HBSFileVersion version;
+        HBSFileCompression compression;
+    };
+
     virtual ~HBSFileIdentifier(){};
     HBSFileIdentifier(){};
 
-    HBSFileVersion identify(const QString &path) const;
+    HBSFileInfo info(const QString &path) const;
 };
 
 #endif // HBSFILEIDENTIFIER_H
