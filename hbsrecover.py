@@ -12,7 +12,7 @@ from Crypto.Hash import MD5
 from Crypto.Cipher import AES
 
 basicConfig(format="(%(name)s)[%(levelname)7s]: %(message)s", level=DEBUG)
-app_log = getLogger('hbs_decrypt')
+app_log = getLogger('hbsrecover')
 app_log.setLevel(INFO)
 
 class HBSFileVersion(Enum):
@@ -133,7 +133,7 @@ def hbs_v2_decrypt(passphrase, infile, outfile, compression):
                 if not enc_block:
                     break
                 plain_block = cipher.decrypt(enc_block)
-                # last block should be processed to remove PKCS#5 padding
+                # last block must be processed to remove PKCS#7 padding
                 if remain <= 0:
                     pad_sz = plain_block[-1]
                     app_log.debug(f"removing {pad_sz} bytes of padding.")
@@ -203,7 +203,7 @@ class HBSEncryptedFile:
 def parse_args():
     '''Parse command line arguments
     '''
-    parser = ArgumentParser(description="Hybrid Backup Sync Decrypt Tool")
+    parser = ArgumentParser(description="Hybrid Backup Sync Recovery Tool")
     parser.add_argument('--debug', '-d', action='store_true', help="Enable debugging output.")
     parser.add_argument('inpath', type=Path, help="Input can be a file or a directory")
     parser.add_argument('outdir', type=Path, help="Output directory where decrypted files will be written")
