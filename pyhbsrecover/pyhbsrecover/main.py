@@ -10,7 +10,7 @@ from getpass import getpass
 from argparse import ArgumentParser
 from . import __banner__
 from .meta import identify_hbs_file
-from .logging import app_log
+from .logging import app_log, set_debug
 from .hbsfile import *
 # ------------------------------------------------------------------------------
 # FUNCTIONS
@@ -28,8 +28,7 @@ def parse_args():
     parser.add_argument('inpath', type=Path,
                         help="Input can be a file or a directory")
     args = parser.parse_args()
-    if args.debug:
-        app_log.setLevel(DEBUG)
+    set_debug(args.debug)
     app_log.debug(args)
     passphrase = 'fingerprint'
     if not args.fingerprint:

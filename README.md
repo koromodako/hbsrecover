@@ -4,8 +4,8 @@ QNAP Hybrid Backup Sync Recovery Tool
 
 ## In this repository
 
- * A native Qt and Botan powered application
- * A Python script relying on PyCrypto and native python modules
+ * `hbsrecover`: A C++ implementation relying on Qt and Botan
+ * `pyhbsrecover`: A Python implementation relying on PyCrypto 
 
 ## Credits
 
@@ -17,10 +17,10 @@ I just did not want to depend on Java... my bad.
 
 ## Limitations
 
-| Hybrid Backup Sync Format | Supported ? | Comment                                              |
-|:-------------------------:|:-----------:|:-----------------------------------------------------|
-|           HBSv1           |     No      | Too old to be worth coding it                        |
-|    HBSv2 w/ compression   |     No      | Compressing before encrypting does not seem smart ;) |
-|   HBSv2 w/o compression   |     Yes     | This is the only one I need for the moment           |
-|   OpenSSL w/ compression  |     No      | Compressing before encrypting does not seem smart ;) |
-|  OpenSSL w/o compression  |     No      | I lack free time, when I need it maybe               |
+| Hybrid Backup Sync Format | Supported by                    | Comment                                       |
+|:-------------------------:|:-------------------------------:|:----------------------------------------------|
+|           HBSv1           | None                            | Too old to be worth coding it                 |
+|    HBSv2 w/ compression   | None                            | Compression and encryption seems odd to me ;) |
+|   HBSv2 w/o compression   | `pyhbsrecover` and `hbsrecover` | Done                                          |
+|    HBSv3 w/ compression   | None                            | Compression and encryption seems odd to me ;) |
+|   HBSv3 w/o compression   | `pyhbsrecover`                  | I'll do the C++ implementation later          |
