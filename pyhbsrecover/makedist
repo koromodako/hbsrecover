@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+echo "-----------------------------------"
+echo "BOOTSRAPING PACKAGE"
+echo "-----------------------------------"
+./bootstrap
+echo "-----------------------------------"
+echo "CREATING SOURCE DISTRIBUTION"
+echo "-----------------------------------"
+python3 setup.py sdist
+echo "-----------------------------------"
+echo "SHA-256 SUMS"
+echo "-----------------------------------"
+sha256sum dist/*.tar.gz | tee dist/dist.sha256

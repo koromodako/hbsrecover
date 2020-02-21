@@ -3,11 +3,16 @@
 hbsrecover.h
 *.o
 *.autosave
+venv*/
 dist*/
 build*/
-picsou/third-party
+hbsrecover/third-party
 third-party/build/
 third-party/botan-*/
+__version__.py
+*.pyc
+*.egg-info/
+__pycache__/
 
 # Prerequisites
 *.d
