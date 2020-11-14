@@ -11,6 +11,7 @@ from ..crypto import (
     aes_cbc_decrypt_data,
 )
 from ..logging import app_log
+
 # ------------------------------------------------------------------------------
 # CLASSES
 # ------------------------------------------------------------------------------
@@ -18,23 +19,16 @@ class HBSEncryptedFileV2(BaseHBSEncryptedFile):
     MAGIC = b'K\xca\x94r^\x83\x1c1'
     VERSION = 2
 
-    HDR_SPECS = {
-        'magic': '8c',
-        'ckey': '32c',
-        'salt': '16c',
-        'data_sz': '>Q'
-    }
+    HDR_SPECS = {'magic': '8c', 'ckey': '32c', 'salt': '16c', 'data_sz': '>Q'}
 
     def _parse_header(self, ifp):
-        '''Parse header data
-        '''
+        """Parse header data"""
         size = 16
         data = ifp.read(size)
         return size, data[9] != 0
 
     def _parse_subheader(self, passphrase, ifp):
-        '''Parse subheader data
-        '''
+        """Parse subheader data"""
         hdr_sz = self._header_size(self.HDR_SPECS)
         ciphered = ifp.read(hdr_sz)
         key = passphrase * (1 + AES_KEY_SZ // len(passphrase))
@@ -50,8 +44,7 @@ class HBSEncryptedFileV2(BaseHBSEncryptedFile):
         return hdr_sz, hdr
 
     def decrypt(self, passphrase, outdir):
-        '''Write decrypted version of the file to outdir
-        '''
+        """Write decrypted version of the file to outdir"""
         with self.filepath.open('rb') as ifp:
             offset = 0
             # read file header to detect compression
@@ -60,7 +53,9 @@ class HBSEncryptedFileV2(BaseHBSEncryptedFile):
             offset += size
             app_log.debug("compression: %s", compression)
             if compression:
-                raise NotImplementedError("HBSEncryptedFileV2 compression not supported.")
+                raise NotImplementedError(
+                    "HBSEncryptedFileV2 compression not supported."
+                )
             # decrypt subheader
             app_log.debug("parsing subheader...")
             size, hdr = self._parse_subheader(passphrase, ifp)
@@ -69,11 +64,14 @@ class HBSEncryptedFileV2(BaseHBSEncryptedFile):
             app_log.debug("performing minimal consistency check...")
             st = self.filepath.stat()
             if hdr['data_sz'] >= st.st_size:
-                app_log.warning("inconsistent size in deciphered header: corrupted header or bad passphrase.")
+                app_log.warning(
+                    "inconsistent size in deciphered header: corrupted header or bad passphrase."
+                )
                 return False
             # decrypt file data
             app_log.debug("decrypting data...")
             outfile = outdir.joinpath(self.filepath.name)
-            aes_cbc_decrypt_data(hdr['ckey'], hdr['salt'],
-                                 ifp, st.st_size - offset, outfile)
+            aes_cbc_decrypt_data(
+                hdr['ckey'], hdr['salt'], ifp, st.st_size - offset, outfile
+            )
             return True

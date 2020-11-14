@@ -12,6 +12,7 @@ from ..crypto import (
     aes_cbc_decrypt_data,
 )
 from ..logging import app_log
+
 # ------------------------------------------------------------------------------
 # CLASSES
 # ------------------------------------------------------------------------------
@@ -25,8 +26,7 @@ class HBSEncryptedFileV3(BaseHBSEncryptedFile):
     }
 
     def _parse_header(self, ifp):
-        '''Parse file header
-        '''
+        """Parse file header"""
         hdr_sz = self._header_size(self.HDR_SPECS)
         hdr = self._unpack_header(self.HDR_SPECS, ifp.read(hdr_sz))
         hdr['magic'] = b''.join(hdr['magic'])
@@ -35,14 +35,14 @@ class HBSEncryptedFileV3(BaseHBSEncryptedFile):
         return hdr_sz, hdr
 
     def decrypt(self, passphrase, outdir):
-        '''Write decrypted version of the file to outdir
-        '''
+        """Write decrypted version of the file to outdir"""
         with self.filepath.open('rb') as ifp:
             offset = 0
             size, hdr = self._parse_header(ifp)
             offset += size
-            key, iv = openssl_pbkdf(AES_KEY_SZ, AES_IV_SZ,
-                                    hdr['salt'], passphrase, 1)
+            key, iv = openssl_pbkdf(
+                AES_KEY_SZ, AES_IV_SZ, hdr['salt'], passphrase, 1
+            )
             st = self.filepath.stat()
             outfile = outdir.joinpath(self.filepath.name)
             aes_cbc_decrypt_data(key, iv, ifp, st.st_size - offset, outfile)

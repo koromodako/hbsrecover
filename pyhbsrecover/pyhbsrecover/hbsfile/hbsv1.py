@@ -4,6 +4,7 @@
 # IMPORTS
 # ------------------------------------------------------------------------------
 from ..meta import BaseHBSEncryptedFile
+
 # ------------------------------------------------------------------------------
 # CLASSES
 # ------------------------------------------------------------------------------
@@ -12,6 +13,5 @@ class HBSEncryptedFileV1(BaseHBSEncryptedFile):
     VERSION = 1
 
     def decrypt(self, passphrase, outdir):
-        '''Write decrypted version of the file to outdir
-        '''
+        """Write decrypted version of the file to outdir"""
         raise NotImplementedError
