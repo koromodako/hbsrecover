@@ -17,10 +17,10 @@ I just did not want to depend on Java... my bad.
 
 ## Limitations
 
-| Hybrid Backup Sync Format | Supported by                    | Comment                                       |
-|:-------------------------:|:-------------------------------:|:----------------------------------------------|
-|           HBSv1           | None                            | Too old to be worth coding it                 |
-|    HBSv2 w/ compression   | None                            | Compression and encryption seems odd to me ;) |
-|   HBSv2 w/o compression   | `pyhbsrecover` and `hbsrecover` | Done                                          |
-|    HBSv3 w/ compression   | None                            | Compression and encryption seems odd to me ;) |
-|   HBSv3 w/o compression   | `pyhbsrecover`                  | I'll do the C++ implementation later          |
+| Hybrid Backup Sync Format | Supported by                    | Comment                                |
+|:-------------------------:|:-------------------------------:|:---------------------------------------|
+|           HBSv1           | None                            | Too old to be worth coding it          |
+|    HBSv2 w/ compression   | None                            | Maybe later                            |
+|   HBSv2 w/o compression   | `pyhbsrecover` and `hbsrecover` | Done                                   |
+|    HBSv3 w/ compression   | None                            | Maybe later                            |
+|   HBSv3 w/o compression   | `pyhbsrecover`                  | I'll do the C++ implementation later   |
