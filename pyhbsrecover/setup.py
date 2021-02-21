@@ -22,7 +22,10 @@ setup(
     # package files
     packages=find_packages(str(HERE)),
     setup_requires=['setuptools_scm'],
-    use_scm_version={'write_to': 'pyhbsrecover/__version__.py'},
+    use_scm_version={
+        'root': '..',
+        'write_to': 'pyhbsrecover/pyhbsrecover/__version__.py'
+    },
     install_requires=requirements(),
     # configuration files
     entry_points={
