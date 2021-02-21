@@ -2,7 +2,7 @@
 '''
 from pathlib import Path
 from setuptools import setup, find_packages
-from pyhbsrecover import __version__
+
 
 HERE = Path(__file__).absolute().parent
 
@@ -15,13 +15,14 @@ def requirements():
 setup(
     # main information
     name='pyhbsrecover',
-    version=__version__,
     description='Recover QNAP Hybrid Backup Sync encrypted files',
     author='koromodako',
     author_email='koromodako@gmail.com',
     url='https://github.com/koromodako/hbsrecover',
     # package files
     packages=find_packages(str(HERE)),
+    setup_requires=['setuptools_scm'],
+    use_scm_version={'write_to': 'pyhbsrecover/__version__.py'},
     install_requires=requirements(),
     # configuration files
     entry_points={
