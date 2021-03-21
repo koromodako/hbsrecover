@@ -13,7 +13,7 @@ Inspired from [Mikiya83](https://github.com/Mikiya83)'s [hbs_decipher](https://g
 
 [Mikiya83](https://github.com/Mikiya83)'s project does not share the limitations below. It implements everything.
 
-I just did not want to depend on Java... my bad.
+I just did not want to depend on Java...
 
 ## Limitations
 
